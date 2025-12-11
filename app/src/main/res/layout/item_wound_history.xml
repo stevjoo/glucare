@@ -21,13 +21,11 @@
         android:padding="16dp"
         android:gravity="center_vertical">
 
-        <!-- KIRI: Circular Progress -->
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp">
 
-            <!-- Background Circle -->
             <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -37,8 +35,6 @@
                 app:trackThickness="4dp"
                 app:indicatorSize="48dp"/>
 
-            <!-- Foreground Circle (Progress actual) -->
-            <!-- Menambahkan app:indicatorDirectionCircular="clockwise" -->
             <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/progressConfidence"
                 android:layout_width="wrap_content"
@@ -50,7 +46,6 @@
                 app:indicatorSize="48dp"
                 app:indicatorDirectionCircular="clockwise"/>
 
-            <!-- Teks Persentase -->
             <TextView
                 android:id="@+id/tvProgressText"
                 android:layout_width="wrap_content"
@@ -62,7 +57,6 @@
                 android:textColor="@color/blue"/>
         </FrameLayout>
 
-        <!-- TENGAH: Info -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -88,7 +82,6 @@
                 android:layout_marginTop="4dp"/>
         </LinearLayout>
 
-        <!-- KANAN: Panah -->
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"

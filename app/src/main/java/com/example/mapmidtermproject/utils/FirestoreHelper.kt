@@ -16,7 +16,6 @@ data class UserProfile(
     val email: String? = null
 )
 
-// Menambahkan ID agar bisa dihapus
 data class FoodLog(
     var id: String = "",
     val foodName: String = "",
@@ -27,8 +26,6 @@ data class FoodLog(
 object FirestoreHelper {
     private val db = Firebase.firestore
     private val auth = Firebase.auth
-
-    // --- PROFIL USER (TETAP SAMA) ---
     fun initUserDataIfNew() {
         val user = auth.currentUser ?: return
         val uid = user.uid
@@ -67,7 +64,7 @@ object FirestoreHelper {
         db.collection("users").document(uid).update("phone", newPhone).addOnSuccessListener { onSuccess() }
     }
 
-    // --- FOOD LOG (TETAP SAMA) ---
+    // --- FOOD LOG  ---
     fun saveFoodLog(food: String, sugar: Int, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         val uid = auth.currentUser?.uid ?: return
         val log = FoodLog(id = "", foodName = food, bloodSugar = sugar)
@@ -98,9 +95,7 @@ object FirestoreHelper {
             .addOnFailureListener { onFailure(it) }
     }
 
-    // --- NEW: WOUND ANALYSIS HISTORY ---
-
-    // Simpan hasil analisis (Label, Akurasi, Lokasi File Lokal)
+    // --- WOUND ANALYSIS HISTORY ---
     fun saveWoundAnalysis(analysis: WoundAnalysis, onSuccess: () -> Unit) {
         val uid = auth.currentUser?.uid ?: return
         db.collection("users").document(uid).collection("wound_history")
@@ -109,11 +104,10 @@ object FirestoreHelper {
             .addOnFailureListener { e -> Log.e("Firestore", "Gagal simpan wound: $e") }
     }
 
-    // Ambil data untuk Grafik dan List History
     fun listenToWoundHistory(onResult: (List<WoundAnalysis>) -> Unit): ListenerRegistration? {
         val uid = auth.currentUser?.uid ?: return null
         return db.collection("users").document(uid).collection("wound_history")
-            .orderBy("timestamp", Query.Direction.DESCENDING) // Terbaru diatas
+            .orderBy("timestamp", Query.Direction.DESCENDING)
             .addSnapshotListener { value, error ->
                 if (error != null) return@addSnapshotListener
                 val list = ArrayList<WoundAnalysis>()
@@ -126,7 +120,6 @@ object FirestoreHelper {
             }
     }
 
-    // Hapus akun (Bersih-bersih)
     fun deleteAccount(onSuccess: () -> Unit, onReauthRequired: () -> Unit, onFailure: (Exception) -> Unit) {
         val uid = auth.currentUser?.uid ?: return
         // Hapus food_logs, wound_history, user doc, auth (Logic sama seperti sebelumnya, disederhanakan disini)
@@ -143,7 +136,6 @@ object FirestoreHelper {
             .addOnFailureListener { Log.e("Firestore", "Gagal update: $it") }
     }
 
-    // Hapus Data Luka
     fun deleteWoundAnalysis(id: String, onSuccess: () -> Unit) {
         val uid = auth.currentUser?.uid ?: return
         db.collection("users").document(uid).collection("wound_history").document(id)

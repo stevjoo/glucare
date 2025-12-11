@@ -28,7 +28,7 @@ class ChangePhoneActivity : AppCompatActivity() {
                 btnSave.isEnabled = false
                 btnSave.text = "Menyimpan..."
 
-                // Panggil fungsi KHUSUS Phone
+                // Panggil function KHUSUS Phone Number
                 FirestoreHelper.updatePhone(phone) {
                     Toast.makeText(this, "Nomor telepon berhasil disimpan!", Toast.LENGTH_SHORT).show()
                     finish()

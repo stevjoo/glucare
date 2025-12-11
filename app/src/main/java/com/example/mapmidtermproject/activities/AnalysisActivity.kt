@@ -28,7 +28,6 @@ class AnalysisActivity : AppCompatActivity() {
     private lateinit var ivWoundImage: ImageView
     private lateinit var btnSelectImage: MaterialButton
     private lateinit var btnStartAnalysis: MaterialButton
-    // btnViewGallery DIHAPUS
     private var currentImageUri: Uri? = null
 
     private lateinit var viewModel: WoundViewModel
@@ -42,7 +41,7 @@ class AnalysisActivity : AppCompatActivity() {
             }
         }
 
-    // Gallery Launcher tetap ada untuk Input Gambar (bukan melihat galeri history)
+    // Gallery Launcher untuk Input Gambar (bukan melihat galeri history)
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let { onImageSelected(it) }

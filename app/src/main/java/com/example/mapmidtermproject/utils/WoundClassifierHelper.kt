@@ -59,14 +59,14 @@ class WoundClassifierHelper(
             var bitmap = BitmapFactory.decodeStream(inputStream)
             if (bitmap == null) return
 
-            // 1. Resize Manual ke 299x299
+            // Resize Manual ke 299x299
             bitmap = Bitmap.createScaledBitmap(bitmap, inputSize, inputSize, true)
 
-            // 2. Siapkan ByteBuffer untuk input model (Ukuran: 1 x 299 x 299 x 3 x 4bytes)
+            // Siapin ByteBuffer untuk input model (Ukuran: 1 x 299 x 299 x 3 x 4bytes)
             val inputBuffer = ByteBuffer.allocateDirect(1 * inputSize * inputSize * 3 * 4)
             inputBuffer.order(ByteOrder.nativeOrder())
 
-            // 3. Konversi Pixel Manual (RGB -> BGR & Mean Subtraction)
+            // Konversi Pixel Manual (RGB -> BGR & Mean Subtraction)
             val intValues = IntArray(inputSize * inputSize)
             bitmap.getPixels(intValues, 0, inputSize, 0, 0, inputSize, inputSize)
 
@@ -81,7 +81,7 @@ class WoundClassifierHelper(
                     val g = ((value shr 8) and 0xFF).toFloat()
                     val b = (value and 0xFF).toFloat()
 
-                    // PENTING: Masukkan ke buffer dengan urutan BGR (Bukan RGB!)
+                    // Masukin ke buffer dengan urutan BGR
                     // Dan kurangi dengan Mean (Standar ResNet)
                     inputBuffer.putFloat(b - MEAN_B)
                     inputBuffer.putFloat(g - MEAN_G)
@@ -89,13 +89,13 @@ class WoundClassifierHelper(
                 }
             }
 
-            // 4. Siapkan Output
+            // Siapkan Output
             val outputBuffer = TensorBuffer.createFixedSize(intArrayOf(1, labels.size), DataType.FLOAT32)
 
-            // 5. Run Inference
+            // Run Inference
             interpreter?.run(inputBuffer, outputBuffer.buffer.rewind())
 
-            // 6. Baca Hasil
+            // Baca Hasil
             val rawScores = outputBuffer.floatArray
 
             // DEBUG: Liat skor mentah di Logcat
@@ -117,15 +117,6 @@ class WoundClassifierHelper(
             } else {
                 "Unknown"
             }
-
-            // Konversi Logits ke Probability (Softmax Sederhana) kalau model ngeluarin angka aneh (bukan 0-1)
-            // Tapi biasanya kita cukup ambil maxScore-nya aja buat perbandingan.
-            // Biar aman di UI, kita kirim maxScore apa adanya, nanti threshold di ViewModel disesuaikan.
-
-            // Tips: Kalau ResNet raw outputnya bisa besar (misal 15.0, -3.0),
-            // Kita anggap confidence tinggi kalau score > simpangan tertentu.
-            // Tapi kalau model lu udah ada layer Softmax di ujung, outputnya pasti 0.0 - 1.0.
-
             classifierListener.onResults(labelFound, maxScore)
 
         } catch (e: Exception) {

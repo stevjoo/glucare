@@ -30,7 +30,6 @@ class FoodLogAdapter(
         val tvSugar: TextView = itemView.findViewById(R.id.tvSugar)
         val tvDate: TextView = itemView.findViewById(R.id.tvDate)
 
-        // Komponen Status Baru
         val cvStatusIcon: MaterialCardView = itemView.findViewById(R.id.cvStatusIcon)
         val ivStatusIcon: ImageView = itemView.findViewById(R.id.ivStatusIcon)
 
@@ -60,28 +59,26 @@ class FoodLogAdapter(
             val context = itemView.context
 
             // Default: Aman (Hijau)
-            var iconRes = android.R.drawable.ic_input_add // Icon Centang Bawaan
+            var iconRes = android.R.drawable.ic_input_add
             var colorRes = R.color.status_safe
             var bgRes = R.color.status_safe_bg
 
             if (log.bloodSugar >= 200) {
                 // Bahaya (Merah)
-                iconRes = android.R.drawable.ic_delete // Icon Silang/Warning Bawaan
+                iconRes = android.R.drawable.ic_delete
                 colorRes = R.color.status_danger
                 bgRes = R.color.status_danger_bg
             } else if (log.bloodSugar >= 140) {
                 // Hati-hati (Oranye)
-                iconRes = android.R.drawable.stat_sys_warning // Icon Segitiga Warning Bawaan
+                iconRes = android.R.drawable.stat_sys_warning
                 colorRes = R.color.status_warning
                 bgRes = R.color.status_warning_bg
             }
 
-            // Terapkan Warna & Icon
             ivStatusIcon.setImageResource(iconRes)
             ivStatusIcon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, colorRes))
             cvStatusIcon.setCardBackgroundColor(ContextCompat.getColor(context, bgRes))
 
-            // Ubah warna teks angka gula darah juga agar senada
             tvSugar.setTextColor(ContextCompat.getColor(context, colorRes))
         }
     }

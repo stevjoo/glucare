@@ -54,8 +54,6 @@ class AllWoundHistoryActivity : AppCompatActivity() {
     }
 
     private fun showDetailDialog(item: WoundAnalysis) {
-        // ... (COPY LOGIKA SHOW DETAIL DIALOG DARI MAIN ACTIVITY KE SINI JUGA) ...
-        // Agar kodenya lengkap:
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_wound_detail, null)
         val builder = AlertDialog.Builder(this)
         builder.setView(dialogView)

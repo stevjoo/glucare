@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         woundViewModel.historyList.observe(this) { list ->
-            // LIMIT HANYA 3 ITEM UNTUK MAIN PAGE
+            // LIMIT 3 ITEM UNTUK MAIN PAGE
             val limitedList = list.take(3)
             historyAdapter.updateData(limitedList)
         }
@@ -197,10 +197,8 @@ class MainActivity : AppCompatActivity() {
         barChart.setDrawBarShadow(false)
         barChart.setDrawBorders(false)
 
-        // Offset bawah untuk label
         barChart.extraBottomOffset = 20f
 
-        // --- KONFIGURASI SCROLLING ---
         barChart.setTouchEnabled(true)
         barChart.isDragEnabled = true
         barChart.setScaleEnabled(false)
@@ -212,11 +210,7 @@ class MainActivity : AppCompatActivity() {
         xAxis.granularity = 1f
         xAxis.textColor = Color.DKGRAY
 
-        // PERBAIKAN: Label lurus (0 derajat)
         xAxis.labelRotationAngle = 0f
-
-        // HAPUS BARIS INI KARENA MENYEBABKAN CRASH:
-        // xAxis.isWordWrapEnabled = true
 
         val axisLeft = barChart.axisLeft
         axisLeft.setDrawGridLines(true)
@@ -238,12 +232,7 @@ class MainActivity : AppCompatActivity() {
         var index = 0f
         for ((label, count) in stats) {
             entries.add(BarEntry(index, count.toFloat()))
-
-            // Kita biarkan string apa adanya.
-            // Karena kita akan memperbesar tampilan (zoom/limit view),
-            // teks yang panjang akan memiliki ruang yang cukup.
             labels.add(label)
-
             index++
         }
 
@@ -262,15 +251,8 @@ class MainActivity : AppCompatActivity() {
 
         barChart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
         barChart.data = data
-
-        // --- VISUAL CUE UNTUK SCROLL ---
-        // PENTING: Angka 3f artinya layar hanya menampilkan 3 batang penuh
-        // dan setengah batang ke-4. Ini memberi efek visual bahwa grafik
-        // terpotong dan bisa digeser (scrollable).
         barChart.setVisibleXRangeMaximum(3f)
-
         barChart.moveViewToX(0f)
-
         barChart.invalidate()
         barChart.animateY(1000)
     }

@@ -31,7 +31,7 @@ class WoundViewModel(application: Application) : AndroidViewModel(application), 
     private val _isDiabeticDetected = MutableLiveData<Boolean>()
     val isDiabeticDetected: LiveData<Boolean> get() = _isDiabeticDetected
 
-    // Local Gallery (Legacy)
+    // Local Gallery
     private val _woundImages = MutableLiveData<List<LocalWoundImage>>()
     val woundImages: LiveData<List<LocalWoundImage>> = _woundImages
 
@@ -39,7 +39,7 @@ class WoundViewModel(application: Application) : AndroidViewModel(application), 
     var lastLabel: String = ""
     var lastConfidence: Float = 0f
 
-    // 1. LOAD HISTORY (Dipanggil di MainActivity)
+    // LOAD HISTORY (Dipanggil di MainActivity)
     fun loadHistory() {
         repository.getWoundHistory { list ->
             _historyList.value = list
@@ -47,14 +47,14 @@ class WoundViewModel(application: Application) : AndroidViewModel(application), 
         }
     }
 
-    // 2. HITUNG STATISTIK (Untuk Bar Chart)
+    // HITUNG STATISTIK (Untuk Bar Chart)
     private fun calculateStats(list: List<WoundAnalysis>) {
         // Mengelompokkan berdasarkan Label dan menghitung jumlahnya
         val stats = list.groupingBy { it.label }.eachCount()
         _statsData.value = stats
     }
 
-    // 3. ANALISIS GAMBAR (Dipanggil di AnalysisActivity)
+    // ANALISIS GAMBAR (Dipanggil di AnalysisActivity)
     fun analyzeImage(uri: Uri) {
         woundClassifier.classify(uri)
     }
@@ -83,7 +83,7 @@ class WoundViewModel(application: Application) : AndroidViewModel(application), 
         _analysisResult.postValue(Event("Error: $error"))
     }
 
-    // 4. SIMPAN HASIL (Local + Firestore)
+    // SIMPAN HASIL (Local + Firestore)
     fun saveResult(uri: Uri) {
         // Simpan ke File Lokal
         val localPath = repository.saveImageToInternalStorage(uri)
@@ -105,14 +105,11 @@ class WoundViewModel(application: Application) : AndroidViewModel(application), 
         loadImages()
     }
 
-    // (Tambahkan fungsi ini ke dalam class WoundViewModel yang sudah ada)
-
     fun updateWoundLabel(item: WoundAnalysis, newLabel: String) {
         repository.updateAnalysisLabel(item.id, newLabel)
     }
 
     fun deleteWoundItem(item: WoundAnalysis) {
-        // 1. Hapus File Lokal jika ada
         if (item.localImagePath.isNotEmpty()) {
             val file = File(item.localImagePath)
             if (file.exists()) {
@@ -120,7 +117,6 @@ class WoundViewModel(application: Application) : AndroidViewModel(application), 
             }
         }
 
-        // 2. Hapus Data di Firestore
         repository.deleteAnalysis(item.id)
     }
 }

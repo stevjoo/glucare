@@ -27,7 +27,6 @@ class WoundRepository(private val context: Context) {
         return mediaDir
     }
 
-    // UPDATE: Return String (Path File) instead of Boolean
     fun saveImageToInternalStorage(uri: Uri): String? {
         return try {
             val inputStream = context.contentResolver.openInputStream(uri)
@@ -48,7 +47,6 @@ class WoundRepository(private val context: Context) {
         }
     }
 
-    // Fungsi baru untuk simpan metadata ke Firestore
     fun saveAnalysisResult(label: String, confidence: Float, localPath: String) {
         val analysis = WoundAnalysis(
             label = label,
@@ -59,12 +57,10 @@ class WoundRepository(private val context: Context) {
         FirestoreHelper.saveWoundAnalysis(analysis) {}
     }
 
-    // Ambil Data History dari Firestore
     fun getWoundHistory(onResult: (List<WoundAnalysis>) -> Unit): ListenerRegistration? {
         return FirestoreHelper.listenToWoundHistory(onResult)
     }
 
-    // Legacy (untuk galeri lokal murni)
     fun getAllImages(): List<LocalWoundImage> {
         val directory = getOutputDirectory()
         val files = directory.listFiles()
@@ -79,8 +75,6 @@ class WoundRepository(private val context: Context) {
     fun deleteImage(file: File): Boolean {
         return if (file.exists()) file.delete() else false
     }
-
-    // (Tambahkan fungsi ini ke dalam class WoundRepository yang sudah ada)
 
     fun updateAnalysisLabel(id: String, newLabel: String) {
         FirestoreHelper.updateWoundLabel(id, newLabel) {}

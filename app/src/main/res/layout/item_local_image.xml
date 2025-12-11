@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Gambar Luka -->
         <ImageView
             android:id="@+id/ivLocalImage"
             android:layout_width="match_parent"
@@ -22,7 +21,6 @@
             android:src="@drawable/ic_placeholder_gallery"
             android:contentDescription="Foto luka tersimpan"/>
 
-        <!-- Tanggal Foto -->
         <TextView
             android:id="@+id/tvDate"
             android:layout_width="match_parent"

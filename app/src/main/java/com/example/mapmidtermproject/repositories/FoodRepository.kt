@@ -5,18 +5,14 @@ import com.example.mapmidtermproject.utils.FoodLog
 import com.google.firebase.firestore.ListenerRegistration
 
 class FoodRepository {
-
-    // Create
     fun addFoodLog(food: String, sugar: Int, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         FirestoreHelper.saveFoodLog(food, sugar, onSuccess, onFailure)
     }
 
-    // Read (Realtime)
     fun getFoodLogs(onResult: (List<FoodLog>) -> Unit): ListenerRegistration? {
         return FirestoreHelper.listenToFoodLogs(onResult)
     }
 
-    // Delete
     fun deleteFoodLog(logId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         FirestoreHelper.deleteFoodLog(logId, onSuccess, onFailure)
     }

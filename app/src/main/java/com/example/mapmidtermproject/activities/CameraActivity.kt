@@ -44,7 +44,6 @@ class CameraActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
 
-        // Pastikan ID ini sesuai dengan yang ada di activity_camera.xml
         viewFinder = findViewById(R.id.previewView)
 
         // Cek Izin dulu
@@ -65,7 +64,7 @@ class CameraActivity : AppCompatActivity() {
             } else {
                 CameraSelector.DEFAULT_BACK_CAMERA
             }
-            startCamera() // Restart kamera dengan lensa baru
+            startCamera()
         }
 
         // Tombol Close
@@ -77,8 +76,6 @@ class CameraActivity : AppCompatActivity() {
 
         cameraProviderFuture.addListener({
             try {
-                // PERBAIKAN: .get() dipindahkan ke dalam try-catch
-                // Ini mencegah crash jika inisialisasi kamera gagal total
                 val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
                 // Preview
@@ -89,11 +86,7 @@ class CameraActivity : AppCompatActivity() {
                     }
 
                 imageCapture = ImageCapture.Builder().build()
-
-                // Unbind use cases before rebinding
                 cameraProvider.unbindAll()
-
-                // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview, imageCapture
                 )

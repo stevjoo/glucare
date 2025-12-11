@@ -88,7 +88,6 @@ class SettingsActivity : AppCompatActivity() {
                     startActivity(Intent(this, LogActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT })
                     true
                 }
-                // HAPUS CASE nav_camera
                 R.id.nav_settings -> true
                 else -> false
             }

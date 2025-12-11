@@ -53,7 +53,6 @@ class AccountSettingsActivity : AppCompatActivity() {
         FirestoreHelper.deleteAccount(
             onSuccess = {
                 loading.dismiss()
-                // Logout Google tanpa menunggu
                 try {
                     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
                     val client = GoogleSignIn.getClient(this, gso)

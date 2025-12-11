@@ -24,7 +24,6 @@
             android:orientation="vertical"
             android:paddingBottom="5dp">
 
-            <!-- HEADER USER -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -61,7 +60,6 @@
                     android:src="@drawable/glucareicon" />
             </LinearLayout>
 
-            <!-- SECTION GRAFIK STATISTIK -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -135,7 +133,6 @@
                     android:background="?attr/selectableItemBackgroundBorderless"/>
             </LinearLayout>
 
-            <!-- LIST HISTORY (Maksimal 3 item via Adapter logic) -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvWoundHistory"
                 android:layout_width="match_parent"
@@ -163,7 +160,6 @@
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- NAVIGATION BAR (3 ITEM) -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         style="@style/Widget.App.BottomNavigationView.NoRipple"

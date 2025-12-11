@@ -17,8 +17,6 @@ class LocalGalleryActivity : AppCompatActivity() {
 
     private lateinit var viewModel: WoundViewModel
     private lateinit var adapter: LocalImageAdapter
-
-    // PERBAIKAN: Deklarasikan sebagai properti kelas agar bisa diakses di mana saja dalam kelas ini
     private lateinit var layoutEmptyState: LinearLayout
     private lateinit var rvGallery: RecyclerView
 
@@ -28,7 +26,6 @@ class LocalGalleryActivity : AppCompatActivity() {
 
         val btnBack = findViewById<ImageView>(R.id.btnBack)
 
-        // Inisialisasi properti kelas
         rvGallery = findViewById(R.id.rvGallery)
         layoutEmptyState = findViewById(R.id.layoutEmptyState)
 
@@ -56,7 +53,6 @@ class LocalGalleryActivity : AppCompatActivity() {
         // Observe Data
         viewModel.woundImages.observe(this) { images ->
             if (images.isEmpty()) {
-                // Sekarang rvGallery dan layoutEmptyState sudah dikenali
                 layoutEmptyState.visibility = View.VISIBLE
                 rvGallery.visibility = View.GONE
             } else {

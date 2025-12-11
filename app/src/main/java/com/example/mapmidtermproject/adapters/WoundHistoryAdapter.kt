@@ -24,8 +24,6 @@ class WoundHistoryAdapter(
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvLabel: TextView = itemView.findViewById(R.id.tvHistoryLabel)
         val tvDate: TextView = itemView.findViewById(R.id.tvHistoryDate)
-
-        // Circular Progress Components
         val progressConfidence: CircularProgressIndicator = itemView.findViewById(R.id.progressConfidence)
         val tvProgressText: TextView = itemView.findViewById(R.id.tvProgressText)
 
@@ -51,12 +49,10 @@ class WoundHistoryAdapter(
             holder.tvDate.text = "-"
         }
 
-        // Set Circular Progress
         val percent = (item.confidence * 100).toInt()
         holder.progressConfidence.progress = percent
         holder.tvProgressText.text = "$percent%"
 
-        // Warna indikator dinamis
         val colorRes = if (percent > 80) R.color.blue else android.R.color.holo_orange_dark
         val color = holder.itemView.context.getColor(colorRes)
 

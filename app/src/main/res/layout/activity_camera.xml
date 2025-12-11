@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Layout Kamera: Preview full, TopBar (Close/Flash), BottomBar (Galeri–Shutter–Flip) -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -10,7 +9,6 @@
     android:fitsSystemWindows="true"
     tools:context=".activities.CameraActivity">
 
-    <!-- PREVIEW -->
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"
         android:layout_width="0dp"
@@ -21,7 +19,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- TOP OVERLAY: Close (left) + Flash (right) -->
     <LinearLayout
         android:id="@+id/topOverlay"
         android:layout_width="0dp"
@@ -61,7 +58,6 @@
             app:tint="@android:color/white"/>
     </LinearLayout>
 
-    <!-- BOTTOM BAR: Galeri – Shutter – Flip -->
     <LinearLayout
         android:id="@+id/bottomBar"
         android:layout_width="0dp"
@@ -76,7 +72,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Galeri -->
         <ImageButton
             android:id="@+id/btnGallery"
             android:layout_width="52dp"
@@ -87,7 +82,6 @@
             android:contentDescription="Buka galeri"
             app:tint="@android:color/white"/>
 
-        <!-- Shutter (FAB bulat) -->
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnShutter"
             android:layout_width="wrap_content"
@@ -104,7 +98,6 @@
             app:elevation="6dp"
             app:pressedTranslationZ="8dp"/>
 
-        <!-- Flip kamera -->
         <ImageButton
             android:id="@+id/btnFlip"
             android:layout_width="52dp"

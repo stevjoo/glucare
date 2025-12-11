@@ -61,7 +61,6 @@ class LogActivity : AppCompatActivity() {
         val toggleGroup = findViewById<MaterialButtonToggleGroup>(R.id.toggleGroup)
         val rvLogs = findViewById<RecyclerView>(R.id.rvFoodLogs)
 
-        // VIEW ALL BUTTON
         val tvViewAllLogs = findViewById<TextView>(R.id.tvViewAllLogs)
         tvViewAllLogs.setOnClickListener {
             startActivity(Intent(this, AllFoodLogActivity::class.java))
@@ -69,15 +68,12 @@ class LogActivity : AppCompatActivity() {
 
         rvLogs.layoutManager = LinearLayoutManager(this)
 
-        // Adapter Click -> Show Edit Dialog
         adapter = FoodLogAdapter { log -> showEditDialog(log) }
         rvLogs.adapter = adapter
 
         viewModel.logs.observe(this) { logs ->
             allLogs = logs
             applyFilter()
-
-            // LIMIT 5 UNTUK HALAMAN UTAMA LOG (ambil 5 terbaru)
             val limitedLogs = logs.sortedByDescending { it.timestamp }.take(5)
             adapter.submitList(limitedLogs)
         }
@@ -172,8 +168,6 @@ class LogActivity : AppCompatActivity() {
         builder.setView(dialogView)
         val dialog = builder.create()
 
-        // --- FIX TRANSPARENT BACKGROUND ---
-        // Ini kuncinya agar rounded corners CardView terlihat sempurna
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val etEditFood = dialogView.findViewById<TextInputEditText>(R.id.etEditFoodName)

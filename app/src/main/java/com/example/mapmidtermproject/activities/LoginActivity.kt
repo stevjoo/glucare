@@ -25,7 +25,6 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
-    // UBAH TIPE DARI SignInButton MENJADI Button (atau MaterialButton)
     private lateinit var btnGoogleSignIn: Button
     private lateinit var progressBar: ProgressBar
 
@@ -53,7 +52,6 @@ class LoginActivity : AppCompatActivity() {
 
         auth = Firebase.auth
 
-        // Casting ke Button biasa sudah cukup karena MaterialButton adalah turunan Button
         btnGoogleSignIn = findViewById(R.id.btnGoogleSignIn)
         progressBar = findViewById(R.id.progressBar)
 

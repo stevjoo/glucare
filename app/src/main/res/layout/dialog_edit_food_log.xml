@@ -8,7 +8,6 @@
     app:cardCornerRadius="24dp"
     app:cardElevation="8dp">
 
-    <!-- HAPUS android:background DI SINI -->
     <LinearLayout
         android:id="@+id/round"
         android:layout_width="match_parent"

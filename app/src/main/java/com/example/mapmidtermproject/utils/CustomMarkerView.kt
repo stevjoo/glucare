@@ -28,7 +28,6 @@ class CustomMarkerView(context: Context, layoutResource: Int, private val logs: 
     }
 
     override fun getOffset(): MPPointF {
-        // Mengatur posisi popup agar tepat di atas titik
         return MPPointF(-(width / 2f), -height.toFloat())
     }
 }
