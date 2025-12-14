@@ -40,6 +40,12 @@ import com.google.firebase.ktx.Firebase
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
+import android.util.Base64
+import java.io.FileOutputStream
+import android.graphics.Bitmap
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import java.util.Calendar
 
 class MainActivity : AppCompatActivity() {
 
@@ -131,13 +137,13 @@ class MainActivity : AppCompatActivity() {
         val etLabel = dialogView.findViewById<TextInputEditText>(R.id.etDetailLabel)
         val btnUpdate = dialogView.findViewById<MaterialButton>(R.id.btnUpdate)
         val btnDelete = dialogView.findViewById<MaterialButton>(R.id.btnDelete)
-
         val progressDetail = dialogView.findViewById<CircularProgressIndicator>(R.id.progressDetail)
         val tvDetailPercent = dialogView.findViewById<TextView>(R.id.tvDetailPercent)
+
         val tvDetailDate = dialogView.findViewById<TextView>(R.id.tvDetailDate)
+        val btnEditDate = dialogView.findViewById<MaterialButton>(R.id.btnEditDate)
 
         etLabel.setText(item.label)
-
         val percent = (item.confidence * 100).toInt()
         progressDetail.progress = percent
         tvDetailPercent.text = "$percent%"
@@ -150,16 +156,53 @@ class MainActivity : AppCompatActivity() {
             tvDetailPercent.setTextColor(getColor(android.R.color.holo_orange_dark))
         }
 
-        if (item.timestamp != null) {
-            val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
-            tvDetailDate.text = sdf.format(item.timestamp)
+        // --- CALENDAR ---
+        val calendar = Calendar.getInstance()
+        calendar.time = item.timestamp
+        val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
+        tvDetailDate.text = sdf.format(calendar.time)
+
+        btnEditDate.setOnClickListener {
+            DatePickerDialog(this, { _, year, month, day ->
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month)
+                calendar.set(Calendar.DAY_OF_MONTH, day)
+
+                TimePickerDialog(this, { _, hour, minute ->
+                    calendar.set(Calendar.HOUR_OF_DAY, hour)
+                    calendar.set(Calendar.MINUTE, minute)
+                    tvDetailDate.text = sdf.format(calendar.time)
+                }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show()
+
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
         }
 
+        // --- IMAGE HYBRID & AUTO SAVE ---
         val imgFile = File(item.localImagePath)
+
         if (imgFile.exists()) {
             val bitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
             ivImage.setImageBitmap(bitmap)
             tvStatus.visibility = View.GONE
+        } else if (item.imageBase64.isNotEmpty()) {
+            try {
+                val decodedString = Base64.decode(item.imageBase64, Base64.DEFAULT)
+                val decodedBitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+                ivImage.setImageBitmap(decodedBitmap)
+                tvStatus.visibility = View.GONE
+
+                // AUTO SAVE
+                try {
+                    val fileOut = FileOutputStream(imgFile)
+                    decodedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fileOut)
+                    fileOut.flush()
+                    fileOut.close()
+                } catch (e: Exception) { e.printStackTrace() }
+
+            } catch (e: Exception) {
+                ivImage.setImageResource(R.drawable.ic_image_placeholder)
+                tvStatus.visibility = View.VISIBLE
+            }
         } else {
             ivImage.setImageResource(R.drawable.ic_image_placeholder)
             ivImage.alpha = 0.5f
@@ -170,6 +213,7 @@ class MainActivity : AppCompatActivity() {
             val newLabel = etLabel.text.toString().trim()
             if (newLabel.isNotEmpty()) {
                 woundViewModel.updateWoundLabel(item, newLabel)
+                woundViewModel.updateWoundDate(item, calendar.time)
                 Toast.makeText(this, "Data diperbarui", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             }

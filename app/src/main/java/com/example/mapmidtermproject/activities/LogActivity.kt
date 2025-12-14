@@ -1,6 +1,7 @@
 package com.example.mapmidtermproject.activities
 
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog // Tambahkan import ini
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -160,14 +161,12 @@ class LogActivity : AppCompatActivity() {
         }
     }
 
-    // --- DIALOG EDIT LOG ---
+    // --- DIALOG EDIT LOG (REVISI) ---
     private fun showEditDialog(log: FoodLog) {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edit_food_log, null)
-
         val builder = AlertDialog.Builder(this)
         builder.setView(dialogView)
         val dialog = builder.create()
-
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val etEditFood = dialogView.findViewById<TextInputEditText>(R.id.etEditFoodName)
@@ -175,16 +174,39 @@ class LogActivity : AppCompatActivity() {
         val btnUpdate = dialogView.findViewById<MaterialButton>(R.id.btnUpdateLog)
         val btnDelete = dialogView.findViewById<MaterialButton>(R.id.btnDeleteLog)
 
-        // Isi data lama
+        val tvEditTimeLabel = dialogView.findViewById<TextView>(R.id.tvEditTimeLabel)
+        val btnEditTime = dialogView.findViewById<MaterialButton>(R.id.btnEditTime)
+
         etEditFood.setText(log.foodName)
         etEditSugar.setText(log.bloodSugar.toString())
+
+        val calendar = Calendar.getInstance()
+        calendar.time = log.timestamp
+        val sdf = SimpleDateFormat("EEE, dd MMM yyyy, HH:mm", Locale("id", "ID"))
+        tvEditTimeLabel.text = sdf.format(calendar.time)
+
+        btnEditTime.setOnClickListener {
+            DatePickerDialog(this, { _, year, month, day ->
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month)
+                calendar.set(Calendar.DAY_OF_MONTH, day)
+
+                TimePickerDialog(this, { _, hour, minute ->
+                    calendar.set(Calendar.HOUR_OF_DAY, hour)
+                    calendar.set(Calendar.MINUTE, minute)
+
+                    tvEditTimeLabel.text = sdf.format(calendar.time)
+                }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show()
+
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+        }
 
         btnUpdate.setOnClickListener {
             val newFood = etEditFood.text.toString()
             val newSugar = etEditSugar.text.toString().toIntOrNull()
 
             if (newFood.isNotEmpty() && newSugar != null) {
-                viewModel.updateLog(log.id, newFood, newSugar,
+                viewModel.updateLog(log.id, newFood, newSugar, calendar.time,
                     onSuccess = {
                         Toast.makeText(this, "Update berhasil", Toast.LENGTH_SHORT).show()
                         dialog.dismiss()
@@ -207,7 +229,6 @@ class LogActivity : AppCompatActivity() {
                 .setNegativeButton("Batal", null)
                 .show()
         }
-
         dialog.show()
     }
 

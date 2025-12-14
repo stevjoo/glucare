@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sistem mendeteksi..."
-            android:textColor="#E0E0E0"
+            android:textColor="@color/black"
             android:textSize="15sp"
             android:lineSpacingMultiplier="1.4"
             android:gravity="center"

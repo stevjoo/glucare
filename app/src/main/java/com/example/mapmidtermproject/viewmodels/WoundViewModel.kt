@@ -109,6 +109,12 @@ class WoundViewModel(application: Application) : AndroidViewModel(application), 
         repository.updateAnalysisLabel(item.id, newLabel)
     }
 
+    fun updateWoundDate(item: WoundAnalysis, newDate: java.util.Date) {
+        com.example.mapmidtermproject.utils.FirestoreHelper.updateWoundTimestamp(item.id, newDate) {
+            loadHistory()
+        }
+    }
+
     fun deleteWoundItem(item: WoundAnalysis) {
         if (item.localImagePath.isNotEmpty()) {
             val file = File(item.localImagePath)

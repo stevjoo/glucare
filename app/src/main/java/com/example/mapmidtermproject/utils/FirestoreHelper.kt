@@ -8,6 +8,7 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.util.Date
 
 // --- DATA CLASSES ---
 data class UserProfile(
@@ -154,5 +155,26 @@ object FirestoreHelper {
             .update(updates)
             .addOnSuccessListener { onSuccess() }
             .addOnFailureListener { onFailure(it) }
+    }
+
+    fun updateFoodLog(id: String, food: String, sugar: Int, newDate: Date, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        val uid = auth.currentUser?.uid ?: return
+        val updates = hashMapOf<String, Any>(
+            "foodName" to food,
+            "bloodSugar" to sugar,
+            "timestamp" to newDate
+        )
+        db.collection("users").document(uid).collection("food_logs").document(id)
+            .update(updates)
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { onFailure(it) }
+    }
+
+    fun updateWoundTimestamp(id: String, newDate: java.util.Date, onSuccess: () -> Unit) {
+        val uid = auth.currentUser?.uid ?: return
+        db.collection("users").document(uid).collection("wound_history").document(id)
+            .update("timestamp", newDate)
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { Log.e("Firestore", "Gagal update waktu luka: $it") }
     }
 }

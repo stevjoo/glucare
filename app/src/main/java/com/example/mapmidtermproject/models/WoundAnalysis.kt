@@ -7,5 +7,6 @@ data class WoundAnalysis(
     val label: String = "",
     val confidence: Float = 0f,
     val localImagePath: String = "",
+    val imageBase64: String = "",
     val timestamp: Date = Date()
 )
