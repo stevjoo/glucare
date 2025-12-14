@@ -73,7 +73,6 @@ class AllWoundHistoryActivity : AppCompatActivity() {
         val btnDelete = dialogView.findViewById<MaterialButton>(R.id.btnDelete)
         val progressDetail = dialogView.findViewById<CircularProgressIndicator>(R.id.progressDetail)
         val tvDetailPercent = dialogView.findViewById<TextView>(R.id.tvDetailPercent)
-
         val tvDetailDate = dialogView.findViewById<TextView>(R.id.tvDetailDate)
         val btnEditDate = dialogView.findViewById<MaterialButton>(R.id.btnEditDate)
 
@@ -89,30 +88,33 @@ class AllWoundHistoryActivity : AppCompatActivity() {
             progressDetail.setIndicatorColor(getColor(android.R.color.holo_orange_dark))
             tvDetailPercent.setTextColor(getColor(android.R.color.holo_orange_dark))
         }
-
-        // --- SETUP WAKTU ---
-        val calendar = Calendar.getInstance()
-        calendar.time = item.timestamp
+        
+        val editCalendar = Calendar.getInstance()
+        editCalendar.time = item.timestamp
         val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
-        tvDetailDate.text = sdf.format(calendar.time)
+        tvDetailDate.text = sdf.format(editCalendar.time)
 
         btnEditDate.setOnClickListener {
-            DatePickerDialog(this, { _, year, month, day ->
-                calendar.set(Calendar.YEAR, year)
-                calendar.set(Calendar.MONTH, month)
-                calendar.set(Calendar.DAY_OF_MONTH, day)
+            val datePickerDialog = DatePickerDialog(this, { _, year, month, day ->
 
                 TimePickerDialog(this, { _, hour, minute ->
-                    calendar.set(Calendar.HOUR_OF_DAY, hour)
-                    calendar.set(Calendar.MINUTE, minute)
+                    val checkCalendar = Calendar.getInstance()
+                    checkCalendar.set(year, month, day, hour, minute)
 
-                    tvDetailDate.text = sdf.format(calendar.time)
-                }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show()
+                    if (checkCalendar.after(Calendar.getInstance())) {
+                        Toast.makeText(this, "Tidak bisa memilih waktu masa depan!", Toast.LENGTH_SHORT).show()
+                    } else {
+                        editCalendar.set(year, month, day, hour, minute)
+                        tvDetailDate.text = sdf.format(editCalendar.time)
+                    }
+                }, editCalendar.get(Calendar.HOUR_OF_DAY), editCalendar.get(Calendar.MINUTE), true).show()
 
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+            }, editCalendar.get(Calendar.YEAR), editCalendar.get(Calendar.MONTH), editCalendar.get(Calendar.DAY_OF_MONTH))
+
+            datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
+            datePickerDialog.show()
         }
 
-        // --- LOGIKA GAMBAR (AUTO SAVE & HYBRID) ---
         val imgFile = File(item.localImagePath)
 
         if (imgFile.exists()) {
@@ -121,13 +123,12 @@ class AllWoundHistoryActivity : AppCompatActivity() {
             tvStatus.visibility = View.GONE
         } else if (item.imageBase64.isNotEmpty()) {
             try {
-                // Decode dari database
                 val decodedString = Base64.decode(item.imageBase64, Base64.DEFAULT)
                 val decodedBitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
-
                 ivImage.setImageBitmap(decodedBitmap)
                 tvStatus.visibility = View.GONE
-            try {
+
+                try {
                     val fileOut = FileOutputStream(imgFile)
                     decodedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fileOut)
                     fileOut.flush()
@@ -151,7 +152,7 @@ class AllWoundHistoryActivity : AppCompatActivity() {
             val newLabel = etLabel.text.toString().trim()
             if (newLabel.isNotEmpty()) {
                 viewModel.updateWoundLabel(item, newLabel)
-                viewModel.updateWoundDate(item, calendar.time) // Update ke Firestore
+                viewModel.updateWoundDate(item, editCalendar.time) // Update waktu baru
                 Toast.makeText(this, "Data diperbarui", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             }

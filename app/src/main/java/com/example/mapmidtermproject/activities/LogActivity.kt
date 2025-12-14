@@ -173,32 +173,37 @@ class LogActivity : AppCompatActivity() {
         val etEditSugar = dialogView.findViewById<TextInputEditText>(R.id.etEditSugarLevel)
         val btnUpdate = dialogView.findViewById<MaterialButton>(R.id.btnUpdateLog)
         val btnDelete = dialogView.findViewById<MaterialButton>(R.id.btnDeleteLog)
-
         val tvEditTimeLabel = dialogView.findViewById<TextView>(R.id.tvEditTimeLabel)
         val btnEditTime = dialogView.findViewById<MaterialButton>(R.id.btnEditTime)
 
         etEditFood.setText(log.foodName)
         etEditSugar.setText(log.bloodSugar.toString())
 
-        val calendar = Calendar.getInstance()
-        calendar.time = log.timestamp
+        val editCalendar = Calendar.getInstance()
+        editCalendar.time = log.timestamp
         val sdf = SimpleDateFormat("EEE, dd MMM yyyy, HH:mm", Locale("id", "ID"))
-        tvEditTimeLabel.text = sdf.format(calendar.time)
+        tvEditTimeLabel.text = sdf.format(editCalendar.time)
 
         btnEditTime.setOnClickListener {
-            DatePickerDialog(this, { _, year, month, day ->
-                calendar.set(Calendar.YEAR, year)
-                calendar.set(Calendar.MONTH, month)
-                calendar.set(Calendar.DAY_OF_MONTH, day)
-
+            val datePickerDialog = DatePickerDialog(this, { _, year, month, day ->
                 TimePickerDialog(this, { _, hour, minute ->
-                    calendar.set(Calendar.HOUR_OF_DAY, hour)
-                    calendar.set(Calendar.MINUTE, minute)
 
-                    tvEditTimeLabel.text = sdf.format(calendar.time)
-                }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show()
+                    val checkCalendar = Calendar.getInstance()
+                    checkCalendar.set(year, month, day, hour, minute)
 
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+                    if (checkCalendar.after(Calendar.getInstance())) {
+                        Toast.makeText(this, "Tidak bisa memilih waktu masa depan!", Toast.LENGTH_SHORT).show()
+                    } else {
+                        editCalendar.set(year, month, day, hour, minute)
+                        tvEditTimeLabel.text = sdf.format(editCalendar.time)
+                    }
+
+                }, editCalendar.get(Calendar.HOUR_OF_DAY), editCalendar.get(Calendar.MINUTE), true).show()
+
+            }, editCalendar.get(Calendar.YEAR), editCalendar.get(Calendar.MONTH), editCalendar.get(Calendar.DAY_OF_MONTH))
+
+            datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
+            datePickerDialog.show()
         }
 
         btnUpdate.setOnClickListener {
@@ -206,7 +211,7 @@ class LogActivity : AppCompatActivity() {
             val newSugar = etEditSugar.text.toString().toIntOrNull()
 
             if (newFood.isNotEmpty() && newSugar != null) {
-                viewModel.updateLog(log.id, newFood, newSugar, calendar.time,
+                viewModel.updateLog(log.id, newFood, newSugar, editCalendar.time,
                     onSuccess = {
                         Toast.makeText(this, "Update berhasil", Toast.LENGTH_SHORT).show()
                         dialog.dismiss()
@@ -231,6 +236,7 @@ class LogActivity : AppCompatActivity() {
         }
         dialog.show()
     }
+
 
     // --- CHART & FILTER FUNCTIONS ---
 
